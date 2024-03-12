@@ -2,6 +2,8 @@
 
 import "@styles/Register.scss";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 
 const Register = () => {
@@ -24,21 +26,41 @@ const Register = () => {
   };
 
   console.log(formData);
- const handlesubmit = async ( e) => {
-  e.preventDefault()
+
+  const router = useRouter();
+
+  const [passwordMatch, setPasswwordMatch] = useState(true);
+
+  useEffect(() => {
+    setPasswwordMatch(formData.password === formData.confirmPassword);
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     try {
-      const registerform = new FormData()
+      const registerform = new FormData();
+      for (var key in formData) {
+        registerform.append(key, formData[key]);
+      }
+
+      const response = await fetch("/api/register/", {
+        method: "POST",
+        body: registerform,
+      });
+
+      if (response.ok) {
+        router.push("/");
+      }
     } catch (err) {
-      console.log(err)
+      console.log("registration failed", err.message);
     }
-  
- }
+  };
   return (
     <div className="register">
       <img src="/assets/register.jpg" className="register_decor" />
       <div className="register_content">
-        <form className="register_content_form" _>
+        <form className="register_content_form" onSubmit={handleSubmit}>
           <input
             placeholder="Username"
             name="username"
@@ -70,12 +92,15 @@ const Register = () => {
             onChange={handleChange}
             required
           />
+          {!passwordMatch && (
+            <p style={{ color: "red" }}>Your Passwords do not match!</p>
+          )}
           <input
             id="image"
             type="file"
             name="profileImage"
             accept="image/*"
-            style={{ display: "none" }}
+            // style={{ display: "none" }}
             onChange={handleChange}
             required
           />
@@ -91,7 +116,9 @@ const Register = () => {
               onChange={handleChange}
             />
           )}
-          <button type="submit">Register</button>
+          <button type="submit" disabled={!passwordMatch}>
+            Register
+          </button>
         </form>
         <button type="button" onClick={() => {}} className="google">
           <p>Log in With google</p>
