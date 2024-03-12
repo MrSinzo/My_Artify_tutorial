@@ -44,7 +44,7 @@ const Register = () => {
         registerform.append(key, formData[key]);
       }
 
-      const response = await fetch("/api/register/", {
+      const response = await fetch("../api/register/", {
         method: "POST",
         body: registerform,
       });

@@ -32,7 +32,7 @@ export async function POST(req) {
     const profileImagePath = `C:/Users/flip9/Personal_Projects/Artify_tutorial/My_Artify_tutorial/public/uploads/${file.name}`;
     await writeFile(profileImagePath, buffer);
 
-    console.log(`open ${profileImagePath} to see the uloaded files`);
+    console.log(`open ${profileImagePath} to see the uploaded Images!`);
 
     // check if user exists
 

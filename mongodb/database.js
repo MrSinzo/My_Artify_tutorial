@@ -1,17 +1,18 @@
 import mongoose from "mongoose"
 
-let isConneccted = false // track the connection?
+let isConnected = false // track the connection?
 
 export const connectToDB = async () => {
-  mongoose.set('strictquery', true)
+  mongoose.set()
   if (isConnected) {
     console.log("MongoDB is connected")
   }
   try {
     await mongoose.connect(process.env.MONGO_URL, {
       dbName: "artify",
-      useNewUrlParser: true, 
-      useUnifiedTopologu: true 
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+
     }) 
 
     isConnected = true
