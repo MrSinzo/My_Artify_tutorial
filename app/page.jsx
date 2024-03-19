@@ -1,8 +1,9 @@
-import React from 'react'
-
+import Navbar from "@components/Navbar"
 const Home = () => {
   return (
-    <div> hi im the Home page</div>
+    <>
+    <Navbar />
+    </>
   )
 }
 

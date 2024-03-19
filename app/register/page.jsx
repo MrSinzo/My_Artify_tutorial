@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
+import { signIn } from "next-auth/react";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -56,7 +57,11 @@ const Register = () => {
       console.log("registration failed", err.message);
     }
   };
-  return (
+
+  const loginWithGoogle = () => {
+    signIn("google", { callbackURL: "/"}) 
+  }
+    return (
     <div className="register">
       <img src="/assets/register.jpg" className="register_decor" />
       <div className="register_content">
@@ -120,7 +125,11 @@ const Register = () => {
             Register
           </button>
         </form>
-        <button type="button" onClick={() => {}} className="google">
+        <button
+          type="button"
+          onClick={loginWithGoogle}
+          className="google"
+        >
           <p>Log in With google</p>
           <FcGoogle />
         </button>

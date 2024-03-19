@@ -2,7 +2,7 @@ import { connectToDB } from "@mongodb/database";
 import User from "@models/User";
 import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
-import { writeFile} from "fs/promises"
+import { writeFile } from "fs/promises";
 
 // User register//
 
@@ -54,18 +54,23 @@ export async function POST(req) {
       username,
       email,
       password: hashedPassword,
-      profileImagePath: `uploads/${file.name}`
+      profileImagePath: `uploads/${file.name}`,
     });
 
     //save new user
 
-    await newUser.save()
+    await newUser.save();
 
     // send success msg
-return NextResponse.json({message: "User Registered Succesfully", user: newUser}, {status: 200} )
-
+    return NextResponse.json(
+      { message: "User Registered Succesfully", user: newUser },
+      { status: 200 }
+    );
   } catch (err) {
-    console.log(err)
-    return NextResponse.json({ message: " failed to create new user"}, {status: 500})
+    console.log(err);
+    return NextResponse.json(
+      { message: " failed to create new user" },
+      { status: 500 }
+    );
   }
 }
