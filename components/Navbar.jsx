@@ -1,6 +1,6 @@
-"use client"
-import "/styles/Navbar.scss"
-import { Menu, Person, Search } from "@mui/icons-material";
+"use client";
+import "/styles/Navbar.scss";
+import { Menu, Person, Search, ShoppingCart } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -10,7 +10,9 @@ const Navbar = () => {
   const { data: session } = useSession();
   const user = session?.user;
 
-  const [dropDownMenu, setDropDownMenu] =useState(false)
+  console.log(user);
+
+  const [dropDownMenu, setDropDownMenu] = useState(false);
   return (
     <div className="navbar">
       <a href="/">
@@ -25,7 +27,18 @@ const Navbar = () => {
       </div>
 
       <div className="navbar_right">
-        <button className="navbar_right_account" onClick={() => setDropDownMenu(!dropDownMenu)}>
+        {user && (
+          <a href="/cart" className="cart">
+            <ShoppingCart sx={{color: "green"}}/>
+            Cart <span>(2)</span>
+          </a>
+        ) 
+        
+      }
+        <button
+          className="navbar_right_account"
+          onClick={() => setDropDownMenu(!dropDownMenu)}
+        >
           <Menu sx={{ color: "green" }} />
           {!user ? (
             <Person sx={{ color: "gray" }} />
@@ -39,14 +52,23 @@ const Navbar = () => {
         </button>
         {dropDownMenu && !user && (
           <div className="navbar_right_accountmenu">
-              <Link href="/login">Log in</Link>
-              <Link href="/register">Register</Link>
+            <Link href="/login">Log in</Link>
+            <Link href="/register">Register</Link>
           </div>
         )}
-      
+        {dropDownMenu && user && (
+          <div className="navbar_right_accountmenu">
+            <Link href="/wishlist">Wishlist</Link>
+            <Link href="/cart">Cart</Link>
+            <Link href="/order">Order</Link>
+            <Link href="/shop">your shop</Link>
+            <Link href="/create-work">Sell your work</Link>
+            <a href="/">Logout</a>
+          </div>
+        )}
+      </div>
     </div>
-    </div>
-  )
-}
+  );
+};
 
 export default Navbar;

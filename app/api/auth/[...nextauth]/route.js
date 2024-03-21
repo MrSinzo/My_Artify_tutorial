@@ -1,10 +1,10 @@
+// "use client"
+import bcrypt from "bcryptjs"
 import User from "@models/User";
-// import nextAuth from "next-auth";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials"
+import CredentialsProvider from "next-auth/providers/credentials";
 import { connectToDB } from "@mongodb/database";
-
 
 const handler = NextAuth({
   providers: [
@@ -19,25 +19,31 @@ const handler = NextAuth({
         },
       },
     }),
-    CredentialsProvider ({
+
+    CredentialsProvider({
       name: "Credentials",
       async authorize(credentials, req) {
-        await connectToDB()
-        
+
+        if (!credentials.email || !credentials.password) {
+          throw new Error("Invalid Email or Password");
+        }
+
+        await connectToDB();
+
         // checks if user exists
-        const user = await User.findOne({email: credentials.email})
-       if (!user) {
-          throw new Error ("Invalid Email or password")
+        const user = await User.findOne({ email: credentials.email });
+        if (!user) {
+          throw new Error("Invalid Email or password");
         }
 
         // compares password
-        const isMatch = await compare(credentials.password, user.password)
-        if(!user) {
-          throw new error( " Invalid email or password")
+        const isMatch = await bcrypt.compare(credentials.password, user.password);
+        if (!isMatch) {
+          throw new error(" Invalid email or password");
         }
-        return user
-      }
-    })
+        return user;
+      },
+    }),
   ],
 
   secret: process.env.NEXTAUTH_SECRET,
@@ -46,6 +52,9 @@ const handler = NextAuth({
     async session({ session }) {
       const sessionUser = await User.findOne({ email: session.user.email });
       session.user.id = sessionUser._id.toString();
+
+      session.user = { ...session.user, ...sessionUser._doc }
+
       return session;
     },
 
@@ -72,7 +81,7 @@ const handler = NextAuth({
           console.log("Error checking is the user exists:  ", err.message);
         }
       }
-      return true
+      return true;
     },
   },
 });

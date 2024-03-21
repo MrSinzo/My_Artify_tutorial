@@ -105,7 +105,7 @@ const Register = () => {
             type="file"
             name="profileImage"
             accept="image/*"
-            // style={{ display: "none" }}
+            style={{ display: "none" }}
             onChange={handleChange}
             required
           />
